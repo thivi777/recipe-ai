@@ -1,6 +1,6 @@
 body {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    background: linear-gradient(135deg, #2cc987, #88f3ca);
+    background: linear-gradient(135deg, orange, orange);
     min-height: 100vh;
     color: #333;
 }
@@ -8,16 +8,16 @@ body {
 .contact-section h1 {
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
-    color: #fff;
+    color: orange;
 }
 
 form label, form input, form textarea {
-    color: #f8f9fa;
+    color: orange;
 }
 
 .btn-accent {
     background-color: #FBBF24;
-    color: #2cc987;
+    color: orange;
 }
 
 .btn-accent:hover {
@@ -27,7 +27,7 @@ form label, form input, form textarea {
   position: fixed;
   bottom: 20px;
   left: 20px;
-  background: #4b7bec;
+  background: orange;
   color: white;
   width: 55px;
   height: 55px;
@@ -43,5 +43,5 @@ form label, form input, form textarea {
 
 .back-btn:hover {
   transform: scale(1.1);
-  background: #3867d6;
+  background: orange;
 }

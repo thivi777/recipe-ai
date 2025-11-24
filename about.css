@@ -1,29 +1,29 @@
 body {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    background: linear-gradient(135deg, #2cc987, #88f3ca);
-    min-height: 100vh;
-    color: #333;
+    background: linear-gradient(135deg,  orange, orange);
+    min-height: 90h;
+    color: black;
 }
 
 .about-section h1 {
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
-    color: #fff;
+    color:black;
 }
 
 .about-section p, .about-section h4 {
-    color: #f8f9fa;
+    color:black;
 }
 
 footer {
-    background-color: rgba(255,255,255,0.85);
+    background-color: orange
 }
 .back-btn {
   position: fixed;
   bottom: 20px;
   left: 20px;
-  background: #4b7bec;
-  color: white;
+  background: orange;
+  color:black;
   width: 55px;
   height: 55px;
   border-radius: 50%;
@@ -38,5 +38,5 @@ footer {
 
 .back-btn:hover {
   transform: scale(1.1);
-  background: #3867d6;
+  background: orange;
 }
