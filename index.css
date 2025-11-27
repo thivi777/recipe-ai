@@ -126,7 +126,7 @@ body, html {
 
 /* Indicators */
 .carousel-indicators button {
-    width: 12px;
+    width: 100%;
     height: 12px;
     background-color: var(--accent-color);
     border-radius: 50%;
@@ -296,8 +296,6 @@ footer {
     color: #ffffff;   /* Pure bright white */
     text-shadow: 0 3px 10px rgba(0,0,0,0.25); /* makes it stand out */
 }
-
-
 
 
 

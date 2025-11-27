@@ -1,78 +1,141 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // ---------------- DOM Elements ----------------
     const searchBtn = document.getElementById("searchBtn");
+    const searchInput = document.querySelector(".search-bar input");
     const aiRecipeContainer = document.getElementById("aiRecipeCards");
     const carouselInner = document.querySelector("#recipeCarousel .carousel-inner");
     const carouselIndicators = document.querySelector(".carousel-indicators");
+    const togglePromptBtn = document.getElementById("togglePrompt");
+    const promptEditor = document.getElementById("promptEditor");
+    const closePrompt = document.getElementById("closePrompt");
+    const applyPrompt = document.getElementById("applyPrompt");
+    const promptTextArea = document.getElementById("promptText");
 
-    // Function to capitalize first letter
+    let finalPrompt = ""; // Stores the final prompt from editor
+
+    // ---------------- Utility Function ----------------
     const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
 
-    searchBtn.addEventListener("click", () => {
-        const queryInput = document.querySelector(".search-bar input");
-        const query = queryInput.value.trim();
+    // ---------------- Prompt Editor ----------------
+    togglePromptBtn.addEventListener("click", () => {
+        promptEditor.style.display = promptEditor.style.display === "none" ? "block" : "none";
+        promptTextArea.value = searchInput.value;
+    });
 
-        if (!query) {
+    closePrompt.addEventListener("click", () => {
+        promptEditor.style.display = "none";
+    });
+
+    applyPrompt.addEventListener("click", () => {
+        finalPrompt = promptTextArea.value.trim();
+        if (finalPrompt) searchInput.value = finalPrompt;
+        promptEditor.style.display = "none";
+    });
+
+    // ---------------- Search / Generate Recipe ----------------
+    searchBtn.addEventListener("click", () => {
+        const userPrompt = searchInput.value.trim();
+        if (!userPrompt) {
             alert("Please enter a recipe prompt!");
             return;
         }
 
-        // ---------- Add AI Recipe Card ----------
+        // Generate AI Recipe Card
+        addRecipeCard(userPrompt);
+
+        // Clear input
+        searchInput.value = "";
+    });
+
+    // ---------------- Function to Add Recipe Card and Carousel Slide ----------------
+    function addRecipeCard(prompt) {
+        const capPrompt = capitalize(prompt);
+        const imageKeyword = prompt.split(" ")[0];
+
+        // --- Card for grid ---
         const colDiv = document.createElement("div");
         colDiv.className = "col-md-4";
+        colDiv.style.opacity = 0; // fade-in start
 
         const cardDiv = document.createElement("div");
         cardDiv.className = "card ai-recipe-card shadow-sm h-100";
 
-        const imageKeyword = query.split(" ")[0]; // use first word as keyword
         const img = document.createElement("img");
         img.src = `https://source.unsplash.com/400x300/?${imageKeyword},food`;
-        img.alt = query;
+        img.alt = capPrompt;
         img.className = "card-img-top";
 
         const cardBody = document.createElement("div");
         cardBody.className = "card-body";
-        cardBody.innerHTML = `
-            <h5 class="card-title">${capitalize(query)}</h5>
-            <h6>Ingredients:</h6>
-            <ul>
-                <li>Ingredient 1</li>
-                <li>Ingredient 2</li>
-                <li>Ingredient 3</li>
-            </ul>
-            <h6>Instructions:</h6>
-            <p>Mix all ingredients and cook to taste. Enjoy your meal!</p>
-            <a href="#" class="btn btn-accent mt-2"><i class="fas fa-eye me-1"></i>View Recipe</a>
-        `;
 
+        // Title
+        const title = document.createElement("h5");
+        title.className = "card-title";
+        title.textContent = capPrompt;
+
+        // Ingredients
+        const ingHeading = document.createElement("h6");
+        ingHeading.textContent = "Ingredients:";
+        const ingList = document.createElement("ul");
+        ["Ingredient 1", "Ingredient 2", "Ingredient 3"].forEach(text => {
+            const li = document.createElement("li");
+            li.textContent = text;
+            ingList.appendChild(li);
+        });
+
+        // Instructions
+        const instrHeading = document.createElement("h6");
+        instrHeading.textContent = "Instructions:";
+        const instrPara = document.createElement("p");
+        instrPara.textContent = "Mix all ingredients and cook to taste. Enjoy your meal!";
+
+        // Button with icon
+        const viewBtn = document.createElement("a");
+        viewBtn.href = "#";
+        viewBtn.className = "btn btn-accent mt-2";
+
+        // Icon using <i> element
+        const icon = document.createElement("i");
+        icon.className = "fas fa-eye me-1"; // FontAwesome class
+        viewBtn.appendChild(icon);
+        const btnText = document.createTextNode("View Recipe");
+        viewBtn.appendChild(btnText);
+
+        // Assemble card body
+        cardBody.append(title, ingHeading, ingList, instrHeading, instrPara, viewBtn);
+
+        // Assemble card
         cardDiv.append(img, cardBody);
         colDiv.appendChild(cardDiv);
         aiRecipeContainer.appendChild(colDiv);
 
-        // Fade-in effect
-        setTimeout(() => { cardDiv.style.opacity = 1; }, 50);
+        // Fade-in
+        setTimeout(() => { colDiv.style.opacity = 1; }, 50);
 
-        // ---------- Add Slide to Carousel ----------
+        // --- Carousel Slide ---
         const carouselItem = document.createElement("div");
         carouselItem.className = "carousel-item active";
 
         const carouselImg = document.createElement("img");
         carouselImg.src = `https://source.unsplash.com/1200x600/?${imageKeyword},food`;
-        carouselImg.alt = query;
+        carouselImg.alt = capPrompt;
         carouselImg.className = "d-block w-100 carousel-img";
 
         const captionDiv = document.createElement("div");
         captionDiv.className = "carousel-caption d-none d-md-block bg-light bg-opacity-75 rounded p-3";
-        captionDiv.innerHTML = `
-            <h5>${capitalize(query)}</h5>
-            <p>Quick recipe generated by AI based on your prompt.</p>
-        `;
 
+        const captionTitle = document.createElement("h5");
+        captionTitle.textContent = capPrompt;
+        const captionPara = document.createElement("p");
+        captionPara.textContent = "Quick recipe generated by AI based on your prompt.";
+
+        captionDiv.append(captionTitle, captionPara);
         carouselItem.append(carouselImg, captionDiv);
 
-        // Remove "active" from previous slides
+        // Remove active from previous slides
         carouselInner.querySelectorAll(".carousel-item").forEach(item => item.classList.remove("active"));
 
-        // Append new active slide
+        // Append new slide
         carouselInner.appendChild(carouselItem);
 
         // Update carousel indicators
@@ -83,67 +146,5 @@ document.addEventListener("DOMContentLoaded", () => {
         indicatorBtn.className = "rounded-circle";
         indicatorBtn.setAttribute("aria-label", `Slide ${carouselInner.children.length}`);
         carouselIndicators.appendChild(indicatorBtn);
-
-        // Clear input
-        queryInput.value = "";
-    });
-});
-
-// ---------- Prompt Editor Toggle ----------
-const togglePromptBtn = document.getElementById("togglePrompt");
-const promptEditor = document.getElementById("promptEditor");
-const closePrompt = document.getElementById("closePrompt");
-const applyPrompt = document.getElementById("applyPrompt");
-const searchInput = document.querySelector(".search-bar input");
-
-// Default prompt template
-let finalPrompt = "";
-
-// Open/Close Editor
-togglePromptBtn.addEventListener("click", () => {
-    promptEditor.style.display = promptEditor.style.display === "none" ? "block" : "none";
-
-    // Put user input into prompt textbox
-    document.getElementById("promptText").value = searchInput.value;
-});
-
-closePrompt.addEventListener("click", () => {
-    promptEditor.style.display = "none";
-});
-
-// Apply Modified Prompt
-applyPrompt.addEventListener("click", () => {
-    finalPrompt = document.getElementById("promptText").value;
-    searchInput.value = finalPrompt; // update main search bar
-    promptEditor.style.display = "none";
-});
-
-// ---------- Generate AI Recipe ----------
-document.getElementById("searchBtn").addEventListener("click", () => {
-    let userPrompt = searchInput.value;
-
-    if (!userPrompt.trim()) {
-        alert("Please enter ingredients or a recipe idea!");
-        return;
     }
-
-    generateRecipeCard(userPrompt);
 });
-
-// ---------- Fake AI Generator for Demo ----------
-function generateRecipeCard(promptText) {
-    const output = `
-        <div class="col-md-4">
-            <div class="card recipe-card shadow-sm h-100">
-                <img src="https://source.unsplash.com/400x300/?${promptText}" class="card-img-top rounded">
-                <div class="card-body">
-                    <h5 class="card-title">${promptText} Recipe</h5>
-                    <p class="card-text">AI generated recipe based on: <strong>${promptText}</strong></p>
-                    <a href="#" class="btn btn-accent">View Recipe</a>
-                </div>
-            </div>
-        </div>
-    `;
-
-    document.getElementById("aiRecipeCards").innerHTML = output;
-}
