@@ -13,98 +13,139 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let finalPrompt = ""; // Stores the final prompt from editor
 
-    // ---------------- Utility Function ----------------
+    // ---------------- Utility ----------------
     const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
 
     // ---------------- Prompt Editor ----------------
-    togglePromptBtn.addEventListener("click", () => {
+    togglePromptBtn?.addEventListener("click", () => {
         promptEditor.style.display = promptEditor.style.display === "none" ? "block" : "none";
         promptTextArea.value = searchInput.value;
     });
 
-    closePrompt.addEventListener("click", () => {
+    closePrompt?.addEventListener("click", () => {
         promptEditor.style.display = "none";
     });
 
-    applyPrompt.addEventListener("click", () => {
+    applyPrompt?.addEventListener("click", () => {
         finalPrompt = promptTextArea.value.trim();
         if (finalPrompt) searchInput.value = finalPrompt;
         promptEditor.style.display = "none";
     });
 
     // ---------------- Search / Generate Recipe ----------------
-    searchBtn.addEventListener("click", () => {
+    searchBtn.addEventListener("click", async () => {
         const userPrompt = searchInput.value.trim();
         if (!userPrompt) {
             alert("Please enter a recipe prompt!");
             return;
         }
 
-        // Generate AI Recipe Card
-        addRecipeCard(userPrompt);
+        // Disable button to prevent multiple clicks
+        searchBtn.disabled = true;
+        searchBtn.textContent = "Generating...";
 
-        // Clear input
-        searchInput.value = "";
+        try {
+            const recipe = await fetchAIRecipe(userPrompt);
+            addRecipeCard(recipe);
+        } catch (err) {
+            console.error(err);
+            alert("Failed to generate recipe. Try again.");
+        } finally {
+            searchBtn.disabled = false;
+            searchBtn.innerHTML = '<i class="fas fa-search me-2"></i>Generate';
+            searchInput.value = "";
+        }
     });
 
-    // ---------------- Function to Add Recipe Card and Carousel Slide ----------------
-    function addRecipeCard(prompt) {
-        const capPrompt = capitalize(prompt);
-        const imageKeyword = prompt.split(" ")[0];
+    // ---------------- Fetch Recipe from OpenAI ----------------
+    async function fetchAIRecipe(prompt) {
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer YOUR_OPENAI_API_KEY"
+            },
+            body: JSON.stringify({
+                model: "gpt-4.1",
+                messages: [
+                    { role: "system", content: "You are a helpful assistant that generates complete recipes." },
+                    { role: "user", content: `Create a recipe based on this: ${prompt}. 
+                        Include: title, 3-6 ingredients, and step-by-step instructions in JSON format like:
+                        {
+                            "title": "...",
+                            "ingredients": ["...", "..."],
+                            "instructions": ["...", "..."]
+                        }` }
+                ],
+                temperature: 0.7,
+                max_tokens: 500
+            })
+        });
 
-        // --- Card for grid ---
+        const data = await response.json();
+        const content = data.choices[0].message.content;
+
+        // Parse JSON safely
+        try {
+            return JSON.parse(content);
+        } catch (err) {
+            console.error("Error parsing AI response JSON:", content);
+            throw new Error("Invalid AI response format");
+        }
+    }
+
+    // ---------------- Add Recipe Card + Carousel ----------------
+    function addRecipeCard(recipe) {
+        const { title, ingredients, instructions } = recipe;
+        const imageKeyword = title.split(" ")[0];
+
+        // --- Card ---
         const colDiv = document.createElement("div");
         colDiv.className = "col-md-4";
-        colDiv.style.opacity = 0; // fade-in start
+        colDiv.style.opacity = 0;
 
         const cardDiv = document.createElement("div");
         cardDiv.className = "card ai-recipe-card shadow-sm h-100";
 
         const img = document.createElement("img");
         img.src = `https://source.unsplash.com/400x300/?${imageKeyword},food`;
-        img.alt = capPrompt;
+        img.alt = title;
         img.className = "card-img-top";
 
         const cardBody = document.createElement("div");
         cardBody.className = "card-body";
 
-        // Title
-        const title = document.createElement("h5");
-        title.className = "card-title";
-        title.textContent = capPrompt;
+        const cardTitle = document.createElement("h5");
+        cardTitle.className = "card-title";
+        cardTitle.textContent = title;
 
-        // Ingredients
         const ingHeading = document.createElement("h6");
         ingHeading.textContent = "Ingredients:";
         const ingList = document.createElement("ul");
-        ["Ingredient 1", "Ingredient 2", "Ingredient 3"].forEach(text => {
+        ingredients.forEach(ing => {
             const li = document.createElement("li");
-            li.textContent = text;
+            li.textContent = ing;
             ingList.appendChild(li);
         });
 
-        // Instructions
         const instrHeading = document.createElement("h6");
         instrHeading.textContent = "Instructions:";
-        const instrPara = document.createElement("p");
-        instrPara.textContent = "Mix all ingredients and cook to taste. Enjoy your meal!";
+        const instrList = document.createElement("ol");
+        instructions.forEach(step => {
+            const li = document.createElement("li");
+            li.textContent = step;
+            instrList.appendChild(li);
+        });
 
-        // Button with icon
         const viewBtn = document.createElement("a");
         viewBtn.href = "#";
         viewBtn.className = "btn btn-accent mt-2";
-
-        // Icon using <i> element
         const icon = document.createElement("i");
-        icon.className = "fas fa-eye me-1"; // FontAwesome class
+        icon.className = "fas fa-eye me-1";
         viewBtn.appendChild(icon);
-        const btnText = document.createTextNode("View Recipe");
-        viewBtn.appendChild(btnText);
+        viewBtn.appendChild(document.createTextNode("View Recipe"));
 
-        // Assemble card body
-        cardBody.append(title, ingHeading, ingList, instrHeading, instrPara, viewBtn);
-
-        // Assemble card
+        cardBody.append(cardTitle, ingHeading, ingList, instrHeading, instrList, viewBtn);
         cardDiv.append(img, cardBody);
         colDiv.appendChild(cardDiv);
         aiRecipeContainer.appendChild(colDiv);
@@ -112,22 +153,21 @@ document.addEventListener("DOMContentLoaded", () => {
         // Fade-in
         setTimeout(() => { colDiv.style.opacity = 1; }, 50);
 
-        // --- Carousel Slide ---
+        // --- Carousel ---
         const carouselItem = document.createElement("div");
         carouselItem.className = "carousel-item active";
 
         const carouselImg = document.createElement("img");
         carouselImg.src = `https://source.unsplash.com/1200x600/?${imageKeyword},food`;
-        carouselImg.alt = capPrompt;
+        carouselImg.alt = title;
         carouselImg.className = "d-block w-100 carousel-img";
 
         const captionDiv = document.createElement("div");
         captionDiv.className = "carousel-caption d-none d-md-block bg-light bg-opacity-75 rounded p-3";
-
         const captionTitle = document.createElement("h5");
-        captionTitle.textContent = capPrompt;
+        captionTitle.textContent = title;
         const captionPara = document.createElement("p");
-        captionPara.textContent = "Quick recipe generated by AI based on your prompt.";
+        captionPara.textContent = "AI-generated recipe based on your prompt.";
 
         captionDiv.append(captionTitle, captionPara);
         carouselItem.append(carouselImg, captionDiv);
@@ -135,7 +175,6 @@ document.addEventListener("DOMContentLoaded", () => {
         // Remove active from previous slides
         carouselInner.querySelectorAll(".carousel-item").forEach(item => item.classList.remove("active"));
 
-        // Append new slide
         carouselInner.appendChild(carouselItem);
 
         // Update carousel indicators

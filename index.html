@@ -4,32 +4,38 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Recipe Generator</title>
-  
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-  
+
+  <!-- Bootstrap 5.3.8 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
   <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  
+
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500&display=swap" rel="stylesheet">
-  
+
   <!-- Custom CSS -->
   <link rel="stylesheet" href="index.css">
 </head>
+
 <body>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light fixed-top px-4 py-3" style="background: rgba(255,255,255,0.85); backdrop-filter: blur(8px);">
-  <a class="navbar-brand fw-bold" href="#">RecipeAI <i class="fas fa-utensils"></i></a>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top px-4 py-3"
+     style="background: rgba(255,255,255,0.85); backdrop-filter: blur(8px);">
+  <a class="navbar-brand fw-bold" href="#">
+    RecipeAI <i class="fas fa-utensils"></i>
+  </a>
+
   <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
     <span class="navbar-toggler-icon"></span>
   </button>
+
   <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
     <ul class="navbar-nav align-items-center">
       <li class="nav-item mx-2"><a class="nav-link active" href="#">Home</a></li>
       <li class="nav-item mx-2"><a class="nav-link" href="about.html">About</a></li>
-       <li class="nav-item mx-2"><a class="nav-link" href="fedback.html">fedback</a></li>
+      <li class="nav-item mx-2"><a class="nav-link" href="fedback.html">Feedback</a></li>
       <li class="nav-item mx-2"><a class="nav-link" href="contact.html">Contact</a></li>
       <li class="nav-item mx-2"><a class="nav-link" href="#bookmarks"><i class="fas fa-bookmark"></i></a></li>
     </ul>
@@ -44,22 +50,22 @@
   <!-- Search Bar -->
   <div class="search-bar d-flex w-75 mx-auto mb-4 shadow-sm">
     <input type="text" class="form-control rounded-start" placeholder="Search for recipes...">
-    <button class="btn btn-accent rounded-end" id="searchBtn"><i class="fas fa-search me-2"></i>Generate</button>
+    <button class="btn btn-accent rounded-end" id="searchBtn">
+      <i class="fas fa-search me-2"></i> Generate
+    </button>
   </div>
-<!---
-  Editable Prompt Box (hidden by default) -->
-<div id="promptEditor" class="prompt-editor-container w-75 mx-auto mt-3 p-3 shadow-sm" style="display:none;">
-  <label class="fw-bold mb-2">Modify AI Prompt</label>
-  <textarea id="promptText" class="form-control" rows="4"></textarea>
 
-  <div class="d-flex justify-content-end gap-2 mt-2">
-    <button class="btn btn-secondary" id="closePrompt">Close</button>
-    <button class="btn btn-accent" id="applyPrompt">Apply Prompt</button>
+  <!-- Prompt Editor -->
+  <div id="promptEditor" class="prompt-editor-container w-75 mx-auto mt-3 p-3 shadow-sm"
+       style="display:none;">
+    <label class="fw-bold mb-2">Modify AI Prompt</label>
+    <textarea id="promptText" class="form-control" rows="4"></textarea>
+
+    <div class="d-flex justify-content-end gap-2 mt-2">
+      <button class="btn btn-secondary" id="closePrompt">Close</button>
+      <button class="btn btn-accent" id="applyPrompt">Apply Prompt</button>
+    </div>
   </div>
-</div>
-
-
-
 
   <!-- Categories -->
   <div class="categories d-flex flex-wrap justify-content-center gap-2 mb-3">
@@ -82,9 +88,11 @@
 <!-- Featured Recipes Carousel -->
 <section class="carousel-section container my-5">
   <h2 class="text-center mb-4">Featured Recipes</h2>
-  
+
   <div id="recipeCarousel" class="carousel slide shadow-sm rounded" data-bs-ride="carousel">
     <div class="carousel-inner rounded">
+
+      <!-- Slide 1 -->
       <div class="carousel-item active">
         <img src="images/ai-generated-food-food.webp" class="d-block w-100 carousel-img rounded" alt="Pasta">
         <div class="carousel-caption d-none d-md-block bg-light bg-opacity-75 rounded p-3">
@@ -92,41 +100,43 @@
           <p>Rich creamy pasta with fresh herbs and spices.</p>
         </div>
       </div>
+
+      <!-- Slide 2 -->
       <div class="carousel-item">
-<<<<<<< HEAD
-        <img src="" class="d-block w-100 carousel-img rounded" alt="Salad">
-=======
-        <img src="images/ingredients-grilled-wood-flame-plate-generative-ai_188544-8881.avif" class="d-block w-100 carousel-img rounded" alt="Salad">
->>>>>>> c6a84ff (Cleaned old files, added new JS and update images)
+        <img src="images/ingredients-grilled-wood-flame-plate-generative-ai_188544-8881.avif"
+             class="d-block w-100 carousel-img rounded" alt="Salad">
         <div class="carousel-caption d-none d-md-block bg-light bg-opacity-75 rounded p-3">
           <h5>Healthy Salad</h5>
           <p>Fresh and crisp salad for a healthy lifestyle.</p>
         </div>
       </div>
+
+      <!-- Slide 3 -->
       <div class="carousel-item">
-        <img src="images/healthy-cobb-salad-steps-sq-026.jpg" class="d-block w-100 carousel-img rounded" alt="Chicken">
+        <img src="images/healthy-cobb-salad-steps-sq-026.jpg" class="d-block w-100 carousel-img rounded"
+             alt="Chicken">
         <div class="carousel-caption d-none d-md-block bg-light bg-opacity-75 rounded p-3">
           <h5>Grilled Chicken</h5>
           <p>Juicy grilled chicken with aromatic spices.</p>
         </div>
       </div>
+
     </div>
 
     <!-- Controls -->
     <button class="carousel-control-prev" type="button" data-bs-target="#recipeCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
+      <span class="carousel-control-prev-icon bg-dark rounded-circle p-2"></span>
     </button>
+
     <button class="carousel-control-next" type="button" data-bs-target="#recipeCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
+      <span class="carousel-control-next-icon bg-dark rounded-circle p-2"></span>
     </button>
 
     <!-- Indicators -->
     <div class="carousel-indicators mt-2">
-      <button type="button" data-bs-target="#recipeCarousel" data-bs-slide-to="0" class="active rounded-circle" aria-current="true" aria-label="Slide 1"></button>
-      <button type="button" data-bs-target="#recipeCarousel" data-bs-slide-to="1" class="rounded-circle" aria-label="Slide 2"></button>
-      <button type="button" data-bs-target="#recipeCarousel" data-bs-slide-to="2" class="rounded-circle" aria-label="Slide 3"></button>
+      <button type="button" data-bs-target="#recipeCarousel" data-bs-slide-to="0" class="active rounded-circle"></button>
+      <button type="button" data-bs-target="#recipeCarousel" data-bs-slide-to="1" class="rounded-circle"></button>
+      <button type="button" data-bs-target="#recipeCarousel" data-bs-slide-to="2" class="rounded-circle"></button>
     </div>
   </div>
 </section>
@@ -134,8 +144,9 @@
 <!-- Recipe Cards Section -->
 <section class="recipes container my-5">
   <h2 class="text-center mb-4">Popular Recipes</h2>
+
   <div class="row g-4" id="staticRecipeCards">
-    <!-- Static recipe cards -->
+
     <div class="col-md-4">
       <div class="card recipe-card shadow-sm h-100">
         <img src="images/Spicy-Penne-Pasta_-done.png" class="card-img-top rounded" alt="Pasta">
@@ -160,7 +171,8 @@
 
     <div class="col-md-4">
       <div class="card recipe-card shadow-sm h-100">
-        <img src="images/ingredients-grilled-wood-flame-plate-generative-ai_188544-8881.avif" class="card-img-top rounded" alt="Chicken">
+        <img src="images/ingredients-grilled-wood-flame-plate-generative-ai_188544-8881.avif"
+             class="card-img-top rounded" alt="Chicken">
         <div class="card-body">
           <h5 class="card-title">Grilled Chicken</h5>
           <p class="card-text">Juicy grilled chicken with spices and herbs.</p>
@@ -168,12 +180,11 @@
         </div>
       </div>
     </div>
+
   </div>
 
-  <!-- AI-generated recipe cards -->
-  <div class="row g-4 mt-4" id="aiRecipeCards">
-    <!-- Cards appear here dynamically -->
-  </div>
+  <!-- AI Generated Cards -->
+  <div class="row g-4 mt-4" id="aiRecipeCards"></div>
 </section>
 
 <!-- Footer -->
@@ -181,7 +192,11 @@
   <p>&copy; 2025 RecipeAI. All rights reserved. <i class="fas fa-utensils"></i></p>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap 5.3.8 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Custom JS -->
 <script src="index.js"></script>
+
 </body>
 </html>
