@@ -57,42 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // ---------------- Fetch Recipe from OpenAI ----------------
-    async function fetchAIRecipe(prompt) {
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer YOUR_OPENAI_API_KEY"
-            },
-            body: JSON.stringify({
-                model: "gpt-4.1",
-                messages: [
-                    { role: "system", content: "You are a helpful assistant that generates complete recipes." },
-                    { role: "user", content: `Create a recipe based on this: ${prompt}. 
-                        Include: title, 3-6 ingredients, and step-by-step instructions in JSON format like:
-                        {
-                            "title": "...",
-                            "ingredients": ["...", "..."],
-                            "instructions": ["...", "..."]
-                        }` }
-                ],
-                temperature: 0.7,
-                max_tokens: 500
-            })
-        });
-
-        const data = await response.json();
-        const content = data.choices[0].message.content;
-
-        // Parse JSON safely
-        try {
-            return JSON.parse(content);
-        } catch (err) {
-            console.error("Error parsing AI response JSON:", content);
-            throw new Error("Invalid AI response format");
-        }
-    }
+   
 
     // ---------------- Add Recipe Card + Carousel ----------------
     function addRecipeCard(recipe) {
